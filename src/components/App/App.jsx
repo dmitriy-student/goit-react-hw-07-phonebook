@@ -3,10 +3,20 @@ import { Section } from 'components/Section/Section';
 import FormPhonebook from 'components/FormPhonebook/FormPhonebook';
 import Contacts from 'components/Contacts/Contacts';
 import { Filter } from 'components/Filter/Filter';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
+import { selectContacts, selectError } from 'redux/selectors';
 
-export default function App(params) {
-  const contacts = useSelector(state => state.contacts.data);
+const App = () => {
+  const contacts = useSelector(selectContacts);
+  const error = useSelector(selectError);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
     <div className={css.container}>
@@ -14,14 +24,20 @@ export default function App(params) {
       <Section>
         <FormPhonebook></FormPhonebook>
       </Section>
-      <Section title="Contacts">
-        <Filter />
-        {contacts.length > 0 ? (
-          <Contacts />
-        ) : (
-          <p>Your phonebook is empty. Please add contact.</p>
-        )}
-      </Section>
+      {error !== 'null' ? (
+        <Section title="Contacts">
+          <Filter />
+          {contacts.length > 0 ? (
+            <Contacts />
+          ) : (
+            <p>Your phonebook is empty. Please add contact.</p>
+          )}
+        </Section>
+      ) : (
+        <p>Oooops... ERROR</p>
+      )}
     </div>
   );
-}
+};
+
+export default App;

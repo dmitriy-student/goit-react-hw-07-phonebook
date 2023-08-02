@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import css from './FormPhonebook.module.css';
-import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
 import { selectContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
 
 export default function FormPhonebook({ formSubmit }) {
-  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -15,7 +13,6 @@ export default function FormPhonebook({ formSubmit }) {
 
   const handleInput = e => {
     const { name, value } = e.currentTarget;
-    setId(nanoid());
     if (name === 'name') {
       return setName(value);
     }
@@ -33,12 +30,11 @@ export default function FormPhonebook({ formSubmit }) {
     ) {
       return alert(`${name} is already in contacts.`);
     }
-    dispatch(addContact({ id, name, number }));
+    dispatch(addContact({ name, number }));
     resetForm();
   };
 
   const resetForm = () => {
-    setId('');
     setName('');
     setNumber('');
   };
